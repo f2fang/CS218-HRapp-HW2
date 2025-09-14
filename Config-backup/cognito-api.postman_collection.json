@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Cognito Secured HR API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /hr/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{id_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://r7subbj2n5.execute-api.us-west-1.amazonaws.com/ff_test/hr/E1002",
+          "protocol": "https",
+          "host": [
+            "r7subbj2n5",
+            "execute-api",
+            "us-west-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "ff_test",
+            "hr",
+            "E1002"
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /hr",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{id_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"E1012\",\n  \"name\": \"Bob\",\n  \"salary\": 185000,\n  \"dateOfJoin\": \"2025-09-14\"\n}"
+        },
+        "url": {
+          "raw": "https://r7subbj2n5.execute-api.us-west-1.amazonaws.com/ff_test/hr",
+          "protocol": "https",
+          "host": [
+            "r7subbj2n5",
+            "execute-api",
+            "us-west-1",
+            "amazonaws",
+            "com"
+          ],
+          "path": [
+            "ff_test",
+            "hr"
+          ]
+        }
+      }
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "grant_type",
+        "value": "authorization_code",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "6ea5qbg5cf8lbr5cpp2javetp4",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://hr-auth-14661.auth.us-west-1.amazoncognito.com/oauth2/authorize",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://hr-auth-14661.auth.us-west-1.amazoncognito.com/oauth2/token",
+        "type": "string"
+      },
+      {
+        "key": "clientAuth",
+        "value": "body",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "openid profile email",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://oauth.pstmn.io/v1/callback",
+        "type": "string"
+      },
+      {
+        "key": "code_challenge_method",
+        "value": "S256",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "id_token",
+      "value": ""
+    }
+  ]
+}
+

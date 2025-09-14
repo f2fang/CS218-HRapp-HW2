@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Employee</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    a { text-decoration: none; color: #2a5bd7; }
+    form { display: grid; grid-template-columns: 120px 260px; gap: 10px 12px; max-width: 420px; }
+    label { align-self: center; }
+    input, button { padding: 8px 10px; }
+    button { background:#6c757d; color:#fff; border:none; cursor:pointer; }
+    button:hover { background:#5a6268; }
+    table { border-collapse: collapse; margin-top: 20px; min-width: 520px; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+    th { background: #f2f2f2; }
+    #msg { margin-top: 12px; }
+  </style>
+
+  <!-- Amplify UMD + shared AuthKit -->
+  <script src="https://unpkg.com/aws-amplify@4.3.13/dist/aws-amplify.min.js"></script>
+  <script src="auth-config.js"></script>
+</head>
+<body>
+  <p><a href="index.html">← Back</a></p>
+  <h2>Add Employee</h2>
+
+  <form id="addForm">
+    <label for="id">ID</label>
+    <input id="id" name="id" placeholder="E1002" required />
+
+    <label for="name">Name</label>
+    <input id="name" name="name" placeholder="Ada Lovelace" required />
+
+    <label for="salary">Salary</label>
+    <input id="salary" name="salary" type="number" step="1" placeholder="185000" required />
+
+    <label for="doj">Date Of Join</label>
+    <input id="doj" name="dateOfJoin" type="date" required />
+
+    <div></div>
+    <button id="submitBtn" type="submit">Add</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <h3>Result</h3>
+  <div id="result"></div>
+
+  <script>
+    AuthKit.init();
+
+    const API_POST = "https://r7subbj2n5.execute-api.us-west-1.amazonaws.com/ff_test/hr";
+
+    // Ensure login on load
+    (async () => { if (!(await AuthKit.isSignedIn())) AuthKit.login(location.href); })();
+
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id         = document.getElementById("id").value.trim();
+      const name       = document.getElementById("name").value.trim();
+      const salaryRaw  = document.getElementById("salary").value;
+      const dateOfJoin = document.getElementById("doj").value;
+
+      if (!id || !name || !salaryRaw || !dateOfJoin) {
+        return setMsg("Please fill all fields.", true);
+      }
+      const salary = Number(salaryRaw);
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      setMsg("Saving...");
+
+      try {
+        // Bearer + ID token (matches your working cURL)
+        const auth = await AuthKit.getAuthHeader({ use: "id", bearer: true });
+
+        const resp = await fetch(API_POST, {
+          method: "POST",
+          headers: {
+            "Authorization": auth,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id, name, salary, dateOfJoin })
+        });
+
+        const text = await resp.text();
+        let data; try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+
+        if (!resp.ok) {
+          const msg = data.message || data.error || data.raw || `HTTP ${resp.status}`;
+          setMsg(`Request failed: ${msg}`, true);
+          document.getElementById("result").textContent = text || "";
+          return;
+        }
+
+        setMsg("Saved successfully.");
+        const html = `
+          <table>
+            <tr><th>ID</th><th>Name</th><th>Salary</th><th>Date Of Join</th></tr>
+            <tr>
+              <td>${id}</td>
+              <td>${name}</td>
+              <td>${Number.isFinite(salary) ? "$" + salary : ""}</td>
+              <td>${dateOfJoin}</td>
+            </tr>
+          </table>`;
+        document.getElementById("result").innerHTML = html;
+      } catch (e) {
+        setMsg("Network error: " + (e?.message || e), true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    function setMsg(t, bad=false){
+      const el = document.getElementById("msg");
+      el.textContent = t || "";
+      el.style.color = bad ? "crimson" : "#333";
+    }
+  </script>
+</body>
+</html>
+

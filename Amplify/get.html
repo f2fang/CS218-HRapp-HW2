@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Get Employee by ID</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    a { text-decoration:none; color:#2a5bd7; }
+    .row { margin: 10px 0; }
+    button { background:#6c757d; color:#fff; border:none; padding:8px 14px; cursor:pointer; }
+    button:hover { background:#5a6268; }
+    table { border-collapse: collapse; margin-top: 16px; min-width: 520px; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+    th { background: #f2f2f2; }
+    #msg { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <p><a href="index.html">← Back</a></p>
+  <h2>Get Employee by ID</h2>
+
+  <div class="row">
+    <label for="empId">Employee ID:&nbsp;</label>
+    <input type="text" id="empId" value="E1001" />
+  </div>
+
+  <div class="row">
+    <label><input type="checkbox" value="name" checked> Name</label>&nbsp;&nbsp;
+    <label><input type="checkbox" value="salary" checked> Salary</label>&nbsp;&nbsp;
+    <label><input type="checkbox" value="dateOfJoin" checked> Date of Join</label>
+  </div>
+
+  <div class="row">
+    <button id="btnGet">Get</button>
+  </div>
+
+  <div id="msg"></div>
+  <div id="result"></div>
+
+  <!-- Load scripts at the end to avoid blocking & ensure DOM exists -->
+  <script src="https://unpkg.com/aws-amplify@4.3.13/dist/aws-amplify.min.js"></script>
+  <script src="auth-config.js"></script>
+  <script>
+    const API_BASE = "https://r7subbj2n5.execute-api.us-west-1.amazonaws.com/ff_test/hr";
+    const LABELS   = { name: "Name", salary: "Salary", dateOfJoin: "Date Of Join" };
+
+    const $ = (id) => document.getElementById(id);
+    function showMsg(text, bad=false){ const el=$("msg"); el.textContent=text||""; el.style.color=bad?"crimson":"#333"; }
+
+    async function getEmployee() {
+      const id = $("empId").value.trim();
+      if (!id) return showMsg("Please enter an ID.", true);
+
+      const fields = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      if (fields.length === 0) return showMsg("Please select at least one field.", true);
+      if (fields.length > 3)  return showMsg("Please select at most three fields.", true);
+
+      const url = `${API_BASE}/${encodeURIComponent(id)}?fields=${fields.join(",")}`;
+
+      try {
+        showMsg("Loading...");
+        // Bearer + ID token (matches your working cURL)
+        const auth = await AuthKit.getAuthHeader({ use: "id", bearer: true });
+
+        const resp = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Authorization": auth,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const text = await resp.text();
+        let data; try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+
+        if (!resp.ok) {
+          const msg = data.message || data.error || data.raw || `HTTP ${resp.status}`;
+          showMsg(`Request failed: ${msg}`, true);
+          $("result").innerHTML = "";
+          return;
+        }
+
+        // Render table
+        let html = "<table><tr>";
+        fields.forEach(f => html += `<th>${LABELS[f] || f}</th>`);
+        html += "</tr><tr>";
+        fields.forEach(f => {
+          let val = data[f];
+          if (f === "salary" && val !== undefined) val = `$${val}`;
+          html += `<td>${val ?? ""}</td>`;
+        });
+        html += "</tr></table>";
+
+        $("result").innerHTML = html;
+        showMsg("");
+      } catch (e) {
+        showMsg("Network error: " + (e?.message || e), true);
+        $("result").innerHTML = "";
+      }
+    }
+
+    (async function bootstrap(){
+      try {
+        if (!window.aws_amplify) { showMsg("Amplify failed to load. Check network.", true); return; }
+        if (!window.AuthKit)     { showMsg("auth-config.js not found. Make sure it's in the same folder.", true); return; }
+
+        // Initialize shared auth
+        AuthKit.init();
+
+        // Bind click AFTER init so errors don’t prevent handler
+        $("btnGet").addEventListener("click", getEmployee);
+
+        // Ensure signed in; if not, go to Hosted UI (returns to this page)
+        const signed = await AuthKit.isSignedIn().catch(() => false);
+        if (!signed) { AuthKit.login(location.href); return; }
+
+        showMsg(""); // ready
+      } catch (err) {
+        console.error(err);
+        showMsg("Startup error: " + (err?.message || err), true);
+      }
+    })();
+  </script>
+</body>
+</html>
+

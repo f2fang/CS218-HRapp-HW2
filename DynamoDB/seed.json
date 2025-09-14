@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "E1001",
+      "name": "Ada Lovelace",
+      "salary": 185000,
+      "dateOfJoin": "2020-01-15"
+    },
+    {
+      "id": "E1002",
+      "name": "Grace Hopper",
+      "salary": 195000,
+      "dateOfJoin": "2021-07-01"
+    }
+  ]
+}

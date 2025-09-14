@@ -1,0 +1,5 @@
+{
+  "gatewayresponse.header.Access-Control-Allow-Origin": "'https://staging.d2zq2v1gu1gfsu.amplifyapp.com'",
+  "gatewayresponse.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
+  "gatewayresponse.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+}

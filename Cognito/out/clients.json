@@ -1,0 +1,9 @@
+{
+    "UserPoolClients": [
+        {
+            "ClientId": "6ea5qbg5cf8lbr5cpp2javetp4",
+            "UserPoolId": "us-west-1_gPOIMCEDP",
+            "ClientName": "HR-SPA-Client"
+        }
+    ]
+}
