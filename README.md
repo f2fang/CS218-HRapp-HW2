@@ -18,6 +18,16 @@
 - **Lambda/** – `getEmployee.js`, `addEmployee.js`, deploy scripts  
 - **DynamoDB/** – table create/seed scripts (`Employees`)  
 - **IAM/** – Lambda execution role scripts
+- **Doc/** – Documentation & optional screenshots (see below)
+
+## Doc
+- `docs/README.md` – short instructions, resource IDs, and grading path recap.  
+- `docs/screenshots/` – optional screenshots to assist grading:
+  - `00-IndexNotSignedinPage.png` (Hosted UI)  
+  - `01-Login Page.png` (Hosted UI)  
+  - `02-SignedinIndexPage.png` (Get/Add menu visible)  
+  - `03-GetEnployeePage.png` (successful GET)  
+
 
 ## AWS resources (for verification)
 - **Amplify Hosting**: staging.d2zq2v1gu1gfsu.amplifyapp.com  
