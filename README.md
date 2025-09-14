@@ -26,7 +26,8 @@
   - `00-IndexNotSignedinPage.png` (Hosted UI)  
   - `01-Login Page.png` (Hosted UI)  
   - `02-SignedinIndexPage.png` (Get/Add menu visible)  
-  - `03-GetEnployeePage.png` (successful GET)  
+  - `03-GetEnployeePage.png` (successful GET)
+  - `04-PostEnployeePage.png` (Sucessful Add) 
 
 
 ## AWS resources (for verification)
