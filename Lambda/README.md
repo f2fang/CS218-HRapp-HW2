@@ -1,36 +1,39 @@
-# Lambda – functions and deployment
+# Lambda – functions and deployment (Python 3.13)
 
 **Region:** us-west-1  
-**Runtime:** Node.js 18.x  
+**Runtime:** Python 3.13  
 **Env vars (both functions):**
 - `TABLE_NAME` = `Employees`
 - `CORS_ORIGIN` = `https://staging.d2zq2v1gu1gfsu.amplifyapp.com`
 
 ## Files
-- `getEmployee.js` – Handler for **GET** `/hr/{id}?fields=name,salary,dateOfJoin` (returns only selected fields).
-- `addEmployee.js` – Handler for **POST** `/hr` (body: `{id,name,salary,dateOfJoin}`).
-- `lambda-deploy.sh` – Create or update both functions, set env vars.
-- `create-role.sh` – (optional) Create an execution role with basic logs + DynamoDB access.
-- `policy-inline.json` – Least-privilege sample policy (used by `create-role.sh`).
+- `employee_get.py` – Handler for **GET** `/hr/{id}?fields=name|salary|dateOfJoin` (returns **only** the selected field).
+- `employee_post.py` – Handler for **POST** `/hr` (body: `{ id, name, salary, dateOfJoin }`).
+- `lambda-deploy.sh` – Zip & update both functions (code only).
+- `create-role.sh` – (optional) Create two execution roles and attach least-privilege policies.
+- `policy-get.json` – Inline policy for `employee_get` role (`dynamodb:GetItem` only).
+- `policy-post.json` – Inline policy for `employee_post` role (`dynamodb:PutItem` only).
 
 ## Quick deploy
-1) Create a role (or use your own and skip this step):
+1) (Optional) Create roles (edit TABLE_ARN and ACCOUNT_ID):
 ```bash
-cd lambda
+cd lambda_pkg
 chmod +x create-role.sh lambda-deploy.sh
-./create-role.sh            # prints the ROLE_ARN at the end
+./create-role.sh
 ```
-2) Edit `lambda-deploy.sh`, set `ROLE_ARN` to the printed value (or your existing role).  
-3) Deploy / update:
+
+2) Deploy/update Lambda code (set REGION if needed):
 ```bash
 ./lambda-deploy.sh
 ```
-4) In API Gateway, wire routes to functions:
-   - `GET /hr/{id}`  → `hr-get-employee`
-   - `POST /hr`        → `hr-add-employee`
-   (Lambda proxy integration, with your existing Cognito authorizer on the methods.)
+
+3) In API Gateway (REST), wire methods to Lambdas (Lambda **proxy** integration):
+- `GET /hr/{id}`  → `employee_get`
+- `POST /hr`      → `employee_post`
+
+Keep your **Cognito User Pool Authorizer** on these methods (we use the **ID token** as `Authorization: Bearer <id_token>`).
 
 ## Notes
-- CORS headers are added by the function responses (success and errors) using `CORS_ORIGIN`.
-- Authorization is enforced at **API Gateway** (Cognito authorizer). Lambda does not parse JWT.
-- `aws-sdk` v2 is available in the Node.js 18 runtime; no extra dependencies required.
+- **CORS**: Both handlers return the headers using `CORS_ORIGIN`.
+- **Auth**: Authorization is enforced at **API Gateway** (Cognito authorizer). Lambda does not need to parse the JWT unless you want group checks.
+- **Least privilege**: separate roles/policies for GET vs POST.
