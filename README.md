@@ -15,7 +15,7 @@
 - **Amplify/** – Frontend: `index.html`, `get.html`, `add.html`, `auth-config.js`  
 - **APIGateway/** – `apigw-oas30.json` + README (export/import)  
 - **Cognito/** – `out/*.json` (exported config) + `export-config.sh`  
-- **Lambda/** – `getEmployee.js`, `addEmployee.js`, deploy scripts  
+- **Lambda/** – `employee_get.py`, `employee_post.py`, deploy scripts  
 - **DynamoDB/** – table create/seed scripts (`Employees`)  
 - **IAM/** – Lambda execution role scripts
 - **Doc/** – Documentation & optional screenshots (see below)
@@ -35,7 +35,7 @@
 - **API Gateway (REST)**: API Id `r7subbj2n5`, Stage `ff_test`  
 - **Cognito**: User Pool `us-west-1_gPOIMCEDP`, App Client `6ea5qbg5cf8lbr5cpp2javetp4`, Domain `hr-auth-14661.auth.us-west-1.amazoncognito.com`  
 - **DynamoDB**: Table `Employees` (PK: `id`)  
-- **Lambda**: `hr-get-employee` (GET), `hr-add-employee` (POST)
+- **Lambda**: `employee_get` (GET), `employee_post` (POST)
 
 ## Auth & CORS (summary)
 - Frontend includes `Authorization: Bearer <ID_TOKEN>` from Amplify session (`sessionStorage`).  
