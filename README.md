@@ -5,7 +5,7 @@
 **Region:** us-west-1
 
 ## How to grade (happy path)
-1) Open the Live URL → click **Login** (Cognito Hosted UI, Authorization Code + PKCE).  Username: ‘fftest’ Password: 'FFtest123!'
+1) Open the Live URL → click **Login** (Cognito Hosted UI, Authorization Code + PKCE).  
 2) Back on **index**, the menu appears: **Get Employee** / **Add Employee**.  
 3) **Get**: go to `get.html`, enter `E1001`, select 1–3 fields → **Get** (table shows selected fields).  
 4) **Add**: go to `add.html`, fill `id/name/salary/dateOfJoin` → **Add** (echo row).  
@@ -41,6 +41,3 @@
 - Frontend includes `Authorization: Bearer <ID_TOKEN>` from Amplify session (`sessionStorage`).  
 - CORS origin allowed: `https://staging.d2zq2v1gu1gfsu.amplifyapp.com` (success + error paths).
 
-## Test account (for instructor)
-- **Username:** `fftest`  
-- **Password:** 'FFtest123!'
