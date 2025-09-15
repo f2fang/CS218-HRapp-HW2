@@ -1,7 +1,5 @@
 Live URL: https://staging.d2zq2v1gu1gfsu.amplifyapp.com/
 
 Test account:
-- Username: fftest
-- Password: FFtest123!
 
 
