@@ -82,7 +82,7 @@
 
   // Get ready-to-use Authorization header
   // opts: { use: 'id' | 'access', bearer: true|false }
-  async function getAuthHeader(opts = { use: "id", bearer: true }) {
+  async function getAuthHeader(opts = { use: "access", bearer: true }) { // << default to access token
     const token = opts.use === "access" ? await getAccessToken() : await getIdToken();
     return opts.bearer ? `Bearer ${token}` : token;
   }
@@ -97,4 +97,3 @@
   // Expose
   window.AuthKit = { init, isSignedIn, login, logout, getIdToken, getAccessToken, getAuthHeader, onAuthChange, CONFIG };
 })();
-
