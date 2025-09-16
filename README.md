@@ -38,6 +38,6 @@
 - **Lambda**: `employee_get` (GET), `employee_post` (POST)
 
 ## Auth & CORS (summary)
-- Frontend includes `Authorization: Bearer <ID_TOKEN>` from Amplify session (`sessionStorage`).  
+- Frontend includes `Authorization: Bearer <Access_TOKEN>` from Amplify session (`sessionStorage`).  
 - CORS origin allowed: `https://staging.d2zq2v1gu1gfsu.amplifyapp.com` (success + error paths).
 
